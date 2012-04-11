@@ -76,6 +76,13 @@ module FakeBraintree
       options = {:id => params[:id], :merchant_id => params[:merchant_id]}
       Subscription.new(updates, options).update
     end
+    
+    # Braintree::CreditCard.create
+    post "/merchants/:merchant_id/payment_methods" do
+      credit_card_hash = hash_from_request_body_with_key(request, "credit_card")
+      options          = {:merchant_id => params[:merchant_id]}
+      CreditCard.new(credit_card_hash, options).create
+    end
 
     # Braintree::CreditCard.find
     get "/merchants/:merchant_id/payment_methods/:credit_card_token" do

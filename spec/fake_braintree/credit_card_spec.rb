@@ -36,3 +36,17 @@ describe "Braintree::CreditCard.update" do
     lambda { Braintree::CreditCard.update("foo", {:number => TEST_CC_NUMBER}) }.should raise_error(Braintree::NotFoundError)
   end
 end
+
+describe "Braintree::CreditCard.create" do
+  let(:expiration_date) { "08/2012" }
+
+  it "successfully creates a new credit card" do
+    result = Braintree::CreditCard.create(:number => TEST_CC_NUMBER, :expiration_date => expiration_date)
+    result.should be_success
+    Braintree::CreditCard.find(result.credit_card.token).expiration_date.should == expiration_date
+  end
+
+  it "rejects invalid card numbers" do
+    Braintree::CreditCard.create(:number => '4242424242424242', :expiration_date => expiration_date).should_not be_success
+  end
+end
